@@ -15,9 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with repology.  If not, see <http://www.gnu.org/licenses/>.
 
-import fcntl
 import sys
 import time
+
+
+try:
+    from fcntl import flock, LOCK_EX
+except ImportError:
+    LOCK_EX = 0
+    def flock(fd, op):
+        pass
 
 
 class NoopLogger:
@@ -42,7 +49,7 @@ class FileLogger(NoopLogger):
     def Log(self, message):
         prefixstr = self.prefix if self.prefix else ''
         with open(self.path, 'a', encoding='utf-8') as logfile:
-            fcntl.flock(logfile, fcntl.LOCK_EX)
+            flock(logfile, LOCK_EX)
             print(time.strftime('%b %d %T ') + prefixstr + message,
                   file=logfile)
 
