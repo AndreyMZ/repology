@@ -24,7 +24,6 @@ import traceback
 from timeit import default_timer as timer
 
 from repology.config import config
-from repology.database import Database
 from repology.logger import *
 from repology.packageproc import FillPackagesetVersions
 from repology.querymgr import QueryManager
@@ -69,6 +68,8 @@ def ProcessRepositories(options, logger, repoproc, transformer, reponames):
 
 
 def ProcessDatabase(options, logger, repoproc, repositories_updated):
+    from repology.database import Database
+
     logger.Log('connecting to database')
 
     db_logger = logger.GetIndented()
