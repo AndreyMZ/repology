@@ -27,7 +27,18 @@ except ImportError:
         pass
 
 
-class NoopLogger:
+class Logger:
+    def Log(self, message):
+        raise NotImplementedError()
+
+    def GetPrefixed(self, prefix):
+        raise NotImplementedError()
+
+    def GetIndented(self, level=1):
+        return self.GetPrefixed('  ' * level)
+
+
+class NoopLogger(Logger):
     def __init__(self):
         pass
 
@@ -37,11 +48,8 @@ class NoopLogger:
     def GetPrefixed(self, prefix):
         return NoopLogger()
 
-    def GetIndented(self, level=1):
-        return self.GetPrefixed('  ' * level)
 
-
-class FileLogger(NoopLogger):
+class FileLogger(Logger):
     def __init__(self, path, prefix=None):
         self.path = path
         self.prefix = prefix
@@ -58,7 +66,7 @@ class FileLogger(NoopLogger):
                           self.prefix + prefix if self.prefix else prefix)
 
 
-class StderrLogger(NoopLogger):
+class StderrLogger(Logger):
     def __init__(self, prefix=None):
         self.prefix = prefix
 
