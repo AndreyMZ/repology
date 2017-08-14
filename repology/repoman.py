@@ -25,9 +25,9 @@ class RepositoryManager:
         self.repositories = []
         self.repo_by_name = {}
 
-        if repostext:
+        if repostext is not None:
             self.repositories = yaml.safe_load(repostext)
-        else:
+        elif reposdir is not None:
             for root, dirs, files in os.walk(reposdir):
                 for filename in filter(lambda f: f.endswith('.yaml'), files):
                     with open(os.path.join(root, filename)) as reposfile:
@@ -102,12 +102,12 @@ class RepositoryManager:
     def GetMetadata(self, reponames=None):
         return {
             repository['name']: {
-                'incomplete': repository.get('incomplete', False),
-                'shadow': repository.get('shadow', False),
-                'repolinks': repository.get('repolinks', []),
-                'packagelinks': repository.get('packagelinks', []),
-                'family': repository['family'],
-                'desc': repository['desc'],
+            'incomplete': repository.get('incomplete', False),
+            'shadow': repository.get('shadow', False),
+            'repolinks': repository.get('repolinks', []),
+            'packagelinks': repository.get('packagelinks', []),
+            'family': repository['family'],
+            'desc': repository['desc'],
                 'singular': repository['singular'],
                 'type': repository['type'],
                 'color': repository.get('color'),
