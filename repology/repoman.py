@@ -21,17 +21,19 @@ import yaml
 
 
 class RepositoryManager:
-    def __init__(self, reposdir=None, repostext=None):
-        self.repositories = []
+    def __init__(self, reposdir=None, repostext=None, repos=None):
         self.repo_by_name = {}
 
         if repostext is not None:
             self.repositories = yaml.safe_load(repostext)
         elif reposdir is not None:
+            self.repositories = []
             for root, dirs, files in os.walk(reposdir):
                 for filename in filter(lambda f: f.endswith('.yaml'), files):
                     with open(os.path.join(root, filename)) as reposfile:
                         self.repositories += yaml.safe_load(reposfile)
+        elif repos is not None:
+            self.repositories = repos
 
         # process source loops
         for repo in self.repositories:
