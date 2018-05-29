@@ -27,7 +27,21 @@ from repology.logger import NoopLogger
 from repology.package import PackageFlags, PackageSanityCheckFailure, PackageSanityCheckProblem
 from repology.packageproc import PackagesetDeduplicate
 from repology.parsers import Factory as ParserFactory
-from repology.resourceusage import ResourceUsageMonitor
+
+try:
+    from repology.resourceusage import ResourceUsageMonitor
+except ModuleNotFoundError:
+    class ResourceUsageMonitor:
+        """
+        Stub for Windows
+        """
+
+        def __init__(self):
+            pass
+
+        # noinspection PyMethodMayBeStatic
+        def GetStr(self, restart=False) -> str:
+            return "unknown"
 
 
 class StateFileFormatCheckProblem(Exception):
