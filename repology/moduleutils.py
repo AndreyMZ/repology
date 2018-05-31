@@ -51,8 +51,12 @@ class ClassFactory:
                 if name.endswith(suffix) and inspect.isclass(member):
                     self.modules[name[:-len(suffix)]] = member
 
-    def Spawn(self, name, kwargs):
-        class_ = self.modules[name]
+    def Spawn(self, name_or_class, kwargs):
+        if isinstance(name_or_class, type):
+            class_ = name_or_class
+        else:
+            name = name_or_class
+            class_ = self.modules[name]
 
         filtered_kwargs = {
             key: value for key, value in kwargs.items() if key in inspect.getfullargspec(class_.__init__).args

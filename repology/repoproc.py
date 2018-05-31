@@ -125,15 +125,12 @@ class RepositoryProcessor:
         usage = ResourceUsageMonitor()
 
         # parse
-        parser = source['parser']
-        if isinstance(parser, str):
-            parserObj = ParserFactory.Spawn(source['parser'], source)
-        elif isinstance(parser, type):
-            parserObj = parser()
-        else:
-            raise Exception('Unknown parser: {0}'.format(parser))
-
-        packages = parserObj.Parse(self.__GetSourcePath(repository, source))
+        packages = ParserFactory.Spawn(
+            source['parser'],
+            source
+        ).Parse(
+            self.__GetSourcePath(repository, source)
+        )
 
         logger.Log('parsing source {} postprocessing'.format(source['name']))
 
