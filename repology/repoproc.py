@@ -62,16 +62,16 @@ class RepositoryProcessor:
         self.fetch_retry_delay = fetch_retry_delay
         self.safety_checks = safety_checks
 
-    def __GetRepoPath(self, repository):
+    def _GetRepoPath(self, repository):
         return os.path.join(self.statedir, repository['name'] + '.state')
 
-    def __GetSourcePath(self, repository, source):
-        return os.path.join(self.__GetRepoPath(repository), source['name'].replace('/', '_'))
+    def _GetSourcePath(self, repository, source):
+        return os.path.join(self._GetRepoPath(repository), source['name'].replace('/', '_'))
 
     def __GetSerializedPath(self, repository):
         return os.path.join(self.statedir, repository['name'] + '.packages')
 
-    def __CheckRepositoryOutdatedness(self, repository, logger):
+    def _CheckRepositoryOutdatedness(self, repository, logger):
         if 'valid_till' in repository and datetime.date.today() >= repository['valid_till']:
             logger.Log('WARNING: Repository {} has reached EoL, please update configs'.format(repository['name']))
 
@@ -89,7 +89,7 @@ class RepositoryProcessor:
 
             try:
                 fetcher.Fetch(
-                    self.__GetSourcePath(repository, source),
+                    self._GetSourcePath(repository, source),
                     update=update,
                     logger=logger.GetIndented()
                 )
@@ -129,7 +129,7 @@ class RepositoryProcessor:
             source['parser'],
             source
         ).Parse(
-            self.__GetSourcePath(repository, source)
+            self._GetSourcePath(repository, source)
         )
 
         logger.Log('parsing source {} postprocessing'.format(source['name']))
@@ -158,8 +158,8 @@ class RepositoryProcessor:
             os.mkdir(self.statedir)
 
         for source in repository['sources']:
-            if not os.path.isdir(self.__GetRepoPath(repository)):
-                os.mkdir(self.__GetRepoPath(repository))
+            if not os.path.isdir(self._GetRepoPath(repository)):
+                os.mkdir(self._GetRepoPath(repository))
             self.__FetchSource(update, repository, source, logger.GetIndented())
 
         logger.Log('fetching complete')
@@ -277,7 +277,7 @@ class RepositoryProcessor:
     def Fetch(self, reponame, update=True, logger=NoopLogger()):
         repository = self.repoman.GetRepository(reponame)
 
-        self.__CheckRepositoryOutdatedness(repository, logger)
+        self._CheckRepositoryOutdatedness(repository, logger)
 
         self.__Fetch(update, repository, logger)
 
