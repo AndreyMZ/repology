@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with repology.  If not, see <http://www.gnu.org/licenses/>.
-
+import logging
 import sys
 import time
 
@@ -36,6 +36,21 @@ class Logger:
 
     def GetIndented(self, level=1):
         return self.GetPrefixed('  ' * level)
+
+    def log(self, level, msg: str, *args, **kwargs):
+        self.Log(msg.format(*args, **kwargs))
+
+    def debug(self, msg, *args, **kwargs):
+        self.log(logging.DEBUG, msg, *args, **kwargs)
+
+    def info(self, msg, *args, **kwargs):
+        self.log(logging.INFO, msg, *args, **kwargs)
+
+    def warning(self, msg, *args, **kwargs):
+        self.log(logging.WARNING, msg, *args, **kwargs)
+
+    def error(self, msg, *args, **kwargs):
+        self.log(logging.ERROR, msg, *args, **kwargs)
 
 
 class NoopLogger(Logger):
